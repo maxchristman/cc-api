@@ -2,5 +2,10 @@ import time
 from CCAPI import CCAPI
 
 ccapi = CCAPI()
-ccapi.get_course_schedule()
+query = {
+    "dept": "SPAN",
+    "number": "101"
+}
+results = ccapi.class_search(query=query)
+print(results)
 time.sleep(6000)
