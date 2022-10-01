@@ -1,4 +1,6 @@
+import time
 from CCAPI import CCAPI
 
 ccapi = CCAPI()
-print(ccapi.get_advisor())
+ccapi.get_course_schedule()
+time.sleep(6000)

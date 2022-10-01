@@ -8,9 +8,13 @@ from selenium.common.exceptions import TimeoutException
 class CCAPI:
     def __init__(self):
         self.timeout = 10
+        self.driver = self.__login()
 
-    def __login(self, driver):
+    def __login(self):
 
+        options = webdriver.ChromeOptions()
+        options.add_argument("--incognito")
+        driver = webdriver.Chrome(options=options)
         driver.set_page_load_timeout(10)
 
         driver.get("https://connectcarolina.unc.edu/")
@@ -34,12 +38,12 @@ class CCAPI:
         password_input.send_keys(password)
         login_button.click()
 
+        return driver
+
     def get_advisor(self):
-        driver = webdriver.Chrome()
-        self.__login(driver)
 
         try:
-            advisor_element = WebDriverWait(driver, self.timeout).until(EC.presence_of_element_located((By.ID, "NC_CS_enr_tile_boxmiddleright")))
+            advisor_element = WebDriverWait(self.driver, self.timeout).until(EC.presence_of_element_located((By.ID, "NC_CS_enr_tile_boxmiddleright")))
         except TimeoutException:
             print("Timeout loading CC.")
 
@@ -54,4 +58,19 @@ class CCAPI:
         }
 
         return advisor_info
-        
+
+    def __go_to_student_center(self):
+
+        student_center_button = self.driver.find_element(By.ID, "PTNUI_LAND_REC14$0_row_3")
+        student_center_button.click()
+
+    def get_course_schedule(self):
+        self.__go_to_student_center()
+        try:
+            # schedule_table = self.driver.find_element(By.ID, "STDNT_WEEK_SCHD$scroll$0")
+            # schedule_table = self.driver.find_element(By.CLASS_NAME, "PSLEVEL1GRIDWBO")
+            print(self.driver.page_source)
+            # print(schedule_table.get_attribute("innerHTML"))
+        except Exception as e:
+            print(e)
+            time.sleep(6000)
